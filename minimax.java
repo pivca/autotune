@@ -28,12 +28,11 @@ public class minimax {
 
     //ne radi provera ova ako bi radila algoritam bi mogao mozda da radi
     public char checkWin(@NotNull Turn turn){
-        int fullboard = (turn.xBoard|turn.oBoard);
-        if(((fullboard&448) == 448) || ((fullboard&56) == 56) || ((fullboard&7) == 7) || ((fullboard&291) == 291) || ((fullboard&146) == 146) || ((fullboard&73) == 73) || ((fullboard&273) == 273) || ((fullboard&84) == 84)){
-            if(((turn.turn)%2) == 0)
-                return 'o';
-            else
+       if(((turn.xBoard&448) == 448) || ((turn.xBoard&56) == 56) || ((turn.xBoard&7) == 7) || ((turn.xBoard&291) == 291) || ((turn.xBoard&146) == 146) || ((turn.xBoard&73) == 73) || ((turn.xBoard&273) == 273) || ((turn.xBoard&84) == 84)){
                 return 'x';
+        }
+        if(((turn.oBoard&448) == 448) || ((turn.oBoard&56) == 56) || ((turn.oBoard&7) == 7) || ((turn.oBoard&291) == 291) || ((turn.oBoard&146) == 146) || ((turn.oBoard&73) == 73) || ((turn.oBoard&273) == 273) || ((turn.oBoard&84) == 84)){
+            return 'o';
         }
         return 'n';
     }
