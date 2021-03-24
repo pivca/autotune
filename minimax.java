@@ -25,10 +25,8 @@ public class minimax {
     }
 
 
-
-    //ne radi provera ova ako bi radila algoritam bi mogao mozda da radi
     public char checkWin(@NotNull Turn turn){
-       if(((turn.xBoard&448) == 448) || ((turn.xBoard&56) == 56) || ((turn.xBoard&7) == 7) || ((turn.xBoard&291) == 291) || ((turn.xBoard&146) == 146) || ((turn.xBoard&73) == 73) || ((turn.xBoard&273) == 273) || ((turn.xBoard&84) == 84)){
+        if(((turn.xBoard&448) == 448) || ((turn.xBoard&56) == 56) || ((turn.xBoard&7) == 7) || ((turn.xBoard&291) == 291) || ((turn.xBoard&146) == 146) || ((turn.xBoard&73) == 73) || ((turn.xBoard&273) == 273) || ((turn.xBoard&84) == 84)){
                 return 'x';
         }
         if(((turn.oBoard&448) == 448) || ((turn.oBoard&56) == 56) || ((turn.oBoard&7) == 7) || ((turn.oBoard&291) == 291) || ((turn.oBoard&146) == 146) || ((turn.oBoard&73) == 73) || ((turn.oBoard&273) == 273) || ((turn.oBoard&84) == 84)){
@@ -40,6 +38,7 @@ public class minimax {
 
     public Turn nextTurn(Turn turn){
         Turn bestMove = null;
+        Turn next = null;
         short counter = 1;
         int min = -10000;
         int max = 10000;
@@ -66,30 +65,23 @@ public class minimax {
                 short newX = ((turn.turn+1)%2!=0)?(short)(turn.xBoard|counter):turn.xBoard;
                 short newO = ((turn.turn+1)%2==0)?(short)(turn.oBoard|counter):turn.oBoard;
 
-                if((turn.turn+1)%2 == 0){
-                    if( (bestMove = nextTurn(new Turn(newX,newO,0,turn.turn+1))).prio < max){
+                next = new Turn(newX,newO,0,turn.turn+1);
+
+                if((turn.turn)%2 == 0){
+                    if( (bestMove = nextTurn(next)).prio < max){
                         max = bestMove.prio;
                     }
                 }
                 else{
-                    if( (bestMove = nextTurn(new Turn(newX,newO,0,turn.turn+1))).prio > min){
+                    if( (bestMove = nextTurn(next)).prio > min){
                         min = bestMove.prio;
                     }
                 }
             }
             counter<<=1;
         }
-        return bestMove;
+        return next;
     }
 
-    public static void main(String[] args) {
-        minimax ai = new minimax();
-
-        ai.justplayed.xBoard = 320;
-        ai.justplayed.oBoard = 144;
-        ai.justplayed.turn = 4;
-        ai.playTurn();
-
-        System.out.println(ai.justplayed.xBoard);
-    }
+   
 }
