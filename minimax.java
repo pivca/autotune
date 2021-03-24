@@ -1,5 +1,7 @@
 package minimax;
 
+import org.jetbrains.annotations.NotNull;
+
 public class minimax {
 
     public class Turn{
@@ -22,10 +24,10 @@ public class minimax {
         this.justplayed = nextTurn(justplayed);
     }
 
-    public char checkWin(Turn turn){
+    public char checkWin(@NotNull Turn turn){
         int fullboard = (short)(turn.xBoard|turn.oBoard);
         if((fullboard&448) == 448 || (fullboard&56) == 56 || (fullboard&7) == 7 || (fullboard&291) == 291 || (fullboard&146) == 146 || (fullboard&73) == 73 || (fullboard&273) == 273 || (fullboard&84) == 84){
-            if(turn.turn%2 == 0)
+            if(((turn.turn)%2) == 0)
                 return 'o';
             else
                 return 'x';
@@ -37,28 +39,38 @@ public class minimax {
     public Turn nextTurn(Turn turn){
         Turn bestMove = null;
         short counter = 1;
-        int min = -1000;
-        int max = 1000;
+        int min = -10000;
+        int max = 10000;
+        short fullboard = (short)(turn.oBoard|turn.xBoard);
+
+        char outcome = checkWin(turn);
+        if((fullboard) == 511){
+            turn.prio = -turn.turn - 1;
+            return turn;
+        }
+
+        if(outcome == 'x'){
+            turn.prio = 10 - turn.turn-1;
+            return turn;
+        }
+        else if(outcome == 'o'){
+            turn.prio = -10-turn.turn-1;
+            return turn;
+        }
+
+
         for(int i = 0;i<9;i++,counter<<=1){
-            short fullboard = (short)(turn.oBoard|turn.xBoard);
             if((counter|fullboard) != fullboard){
-                short newX = (turn.turn%2!=0)?(short)(turn.xBoard|counter):turn.xBoard;
-                short newO = (turn.turn%2==0)?(short)(turn.oBoard|counter):turn.oBoard;
-                char outcome = checkWin(turn);
-                if(fullboard == 511)
-                    return new Turn(newX,newO,0-turn.turn-1,turn.turn+1);
+                short newX = ((turn.turn+1)%2!=0)?(short)(turn.xBoard|counter):turn.xBoard;
+                short newO = ((turn.turn+1)%2==0)?(short)(turn.oBoard|counter):turn.oBoard;
 
-                if(outcome == 'x' || outcome == 'o'){
-                    return (outcome=='x')?new Turn(newX,newO,10-turn.turn-1,turn.turn+1): new Turn(newX,newO,-10-turn.turn-1,turn.turn+1);
-                }
-
-                if(turn.turn%2 == 0){
-                    if( (bestMove = nextTurn(new Turn(newX,newO,0,turn.turn+1))).prio > max){
+                if((turn.turn+1)%2 == 0){
+                    if( (bestMove = nextTurn(new Turn(newX,newO,0,turn.turn+1))).prio < max){
                         max = bestMove.prio;
                     }
                 }
                 else{
-                    if( (bestMove = nextTurn(new Turn(newX,newO,0,turn.turn+1))).prio < min){
+                    if( (bestMove = nextTurn(new Turn(newX,newO,0,turn.turn+1))).prio > min){
                         min = bestMove.prio;
                     }
                 }
@@ -67,13 +79,12 @@ public class minimax {
         return bestMove;
     }
 
-
     public static void main(String[] args) {
         minimax ai = new minimax();
 
         ai.justplayed.xBoard = 256;
-        ai.justplayed.oBoard = 128;
-        ai.justplayed.turn = 2;
+        ai.justplayed.oBoard = 144;
+        ai.justplayed.turn = 4;
         ai.playTurn();
 
         System.out.println(ai.justplayed.xBoard);
